@@ -1,4 +1,4 @@
-# node-electrum-client
+# rn-electrum-client
 
 Electrum Protocol Client for React Native
 
