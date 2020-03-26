@@ -67,8 +67,16 @@ class ElectrumClient extends Client {
     }, 10000);
   }
 
+  close() {
+    super.close();
+    if (this.timeout != null) {
+      clearTimeout(this.timeout);
+    }
+    this.reconnect = this.onClose = this.keepAlive = () => {}; // dirty hack to make it stop reconnecting
+  }
+
   reconnect() {
-    this.initSocketConnection();
+    this.initSocket();
     return this.initElectrum(this.electrumConfig);
   }
 
