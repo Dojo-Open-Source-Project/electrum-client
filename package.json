@@ -1,21 +1,19 @@
 {
   "name": "electrum-client",
-  "version": "0.0.7",
-  "description": "Electrum protocol client for node.js",
+  "version": "1.0.0",
+  "description": "Electrum protocol client for React Native & Node.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {},
-  "devDependencies": {
-    "electrum-host-parse": "*"
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git://github.com/you21979/node-electrum-client.git"
+    "url": "git://github.com/BlueWallet/rn-electrum-client.git"
   },
   "bugs": {
-    "url": "https://github.com/you21979/node-electrum-client/issues"
+    "url": "https://github.com/BlueWallet/rn-electrum-client/issues"
   },
   "keywords": [
     "client",
@@ -25,6 +23,10 @@
   "engines": {
     "node": ">=6"
   },
-  "author": "Yuki Akiyama",
+  "contributors": [
+    { "name": "Yuki Akiyama" },
+    { "name": "7kharov" },
+    { "name": "overtorment" }
+  ],
   "license": "MIT"
 }
