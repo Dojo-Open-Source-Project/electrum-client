@@ -61,10 +61,10 @@ class ElectrumClient extends Client {
       clearTimeout(this.timeout);
     }
     this.timeout = setTimeout(() => {
-      if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + 10000 / 2) {
+      if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + 5000) {
         this.server_ping();
       }
-    }, 10000);
+    }, 5000);
   }
 
   close() {
@@ -72,7 +72,7 @@ class ElectrumClient extends Client {
     if (this.timeout != null) {
       clearTimeout(this.timeout);
     }
-    this.reconnect = this.onClose = this.keepAlive = () => {}; // dirty hack to make it stop reconnecting
+    this.reconnect = this.reconnect = this.onClose = this.keepAlive = () => {}; // dirty hack to make it stop reconnecting
   }
 
   reconnect() {
@@ -86,6 +86,9 @@ class ElectrumClient extends Client {
   }
   server_banner() {
     return this.request('server.banner', []);
+  }
+  server_features() {
+    return this.request('server.features', []);
   }
   server_ping() {
     return this.request('server.ping', []);
