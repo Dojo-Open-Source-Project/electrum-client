@@ -52,7 +52,7 @@ class ElectrumClient extends Client {
       } else if (this.persistencePolicy == null) {
         this.reconnect();
       }
-    }, 10000);
+    }, 1000);
   }
 
   // ElectrumX persistancy
@@ -62,7 +62,9 @@ class ElectrumClient extends Client {
     }
     this.timeout = setTimeout(() => {
       if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + 5000) {
-        this.server_ping();
+        this.server_ping().catch((reason) => {
+          console.log('keepalive ping failed because of', reason);
+        });
       }
     }, 5000);
   }
@@ -76,6 +78,7 @@ class ElectrumClient extends Client {
   }
 
   reconnect() {
+    console.log('electrum reconnect');
     this.initSocket();
     return this.initElectrum(this.electrumConfig);
   }
