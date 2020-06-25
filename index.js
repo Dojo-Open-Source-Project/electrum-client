@@ -2,6 +2,9 @@
 
 const Client = require('./lib/client');
 
+const debug = require("debug");
+const debugLog = debug("electrumClient");
+
 class ElectrumClient extends Client {
   constructor(port, host, protocol, options) {
     super(port, host, protocol, options);
@@ -63,7 +66,7 @@ class ElectrumClient extends Client {
     this.timeout = setTimeout(() => {
       if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + 5000) {
         this.server_ping().catch((reason) => {
-          console.log('keepalive ping failed because of', reason);
+          debugLog('keepalive ping failed because of', reason);
         });
       }
     }, 5000);
@@ -78,7 +81,7 @@ class ElectrumClient extends Client {
   }
 
   reconnect() {
-    console.log('electrum reconnect');
+    debugLog("Electrum reconnect");
     this.initSocket();
     return this.initElectrum(this.electrumConfig);
   }
