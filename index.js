@@ -66,7 +66,7 @@ class ElectrumClient extends Client {
     this.timeout = setTimeout(() => {
       if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + 5000) {
         this.server_ping().catch((reason) => {
-          debugLog('keepalive ping failed because of', reason);
+          debugLog('Keep-Alive ping failed: ', reason);
         });
       }
     }, 5000);
@@ -81,7 +81,7 @@ class ElectrumClient extends Client {
   }
 
   reconnect() {
-    debugLog("Electrum reconnect");
+    debugLog("Electrum reconnecting...");
     this.initSocket();
     return this.initElectrum(this.electrumConfig);
   }
