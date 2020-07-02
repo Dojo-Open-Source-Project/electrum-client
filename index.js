@@ -91,7 +91,13 @@ class ElectrumClient extends Client {
   reconnect() {
     debugLog("Electrum reconnecting...");
     this.initSocket();
-    return this.initElectrum(this.electrumConfig);
+
+    if (this.persistencePolicy != null) {
+      return this.initElectrum(this.electrumConfig, this.persistencePolicy);
+      
+    } else {
+      return this.initElectrum(this.electrumConfig);
+    }
   }
 
   // ElectrumX API
