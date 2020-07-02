@@ -2,12 +2,9 @@
 
 const Client = require('./lib/client');
 
-const debug = require("debug");
-const debugLog = debug("electrumClient");
-
 class ElectrumClient extends Client {
-	constructor(port, host, protocol, options) {
-		super(port, host, protocol, options);
+	constructor(port, host, protocol, options, callbacks) {
+		super(port, host, protocol, options, callbacks);
 		this.timeLastCall = 0;
 	}
 
@@ -16,7 +13,7 @@ class ElectrumClient extends Client {
 		this.electrumConfig = electrumConfig;
 		this.timeLastCall = 0;
 		return this.connect().then(() => this.server_version(this.electrumConfig.client, this.electrumConfig.version)).catch((err) => {
-			debugLog("Error connecting to Electrum: " + err);
+			this.log("Error connecting to Electrum: " + err);
 		});
 	}
 
@@ -74,7 +71,7 @@ class ElectrumClient extends Client {
 		this.timeout = setTimeout(() => {
 			if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + 5000) {
 				this.server_ping().catch((reason) => {
-					debugLog('Keep-Alive ping failed: ', reason);
+					this.log('Keep-Alive ping failed: ', reason);
 				});
 			}
 		}, 5000);
@@ -89,7 +86,8 @@ class ElectrumClient extends Client {
 	}
 
 	reconnect() {
-		debugLog("Electrum reconnecting...");
+		this.log("Electrum reconnecting...");
+		
 		this.initSocket();
 
 		if (this.persistencePolicy != null) {
