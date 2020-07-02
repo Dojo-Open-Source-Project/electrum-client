@@ -1,11 +1,12 @@
-# rn-electrum-client
+# electrum-client
 
-Electrum Protocol Client for React Native
+Electrum Protocol Client for node.js.
 
 # based on
 
 * https://github.com/you21979/node-electrum-client
 * https://github.com/7kharov/node-electrum-client
+* https://github.com/BlueWallet/rn-electrum-client
 
 # features
 
