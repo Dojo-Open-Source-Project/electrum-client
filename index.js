@@ -11,7 +11,7 @@ class ElectrumClient extends Client {
     this.timeLastCall = 0;
   }
 
-  initElectrum(electrumConfig, persistencePolicy = { maxRetry: 1000, callback: null }) {
+  initElectrum(electrumConfig, persistencePolicy = { retryPeriod: 5000, maxRetry: 1000, callback: null }) {
     this.persistencePolicy = persistencePolicy;
     this.electrumConfig = electrumConfig;
     this.timeLastCall = 0;
@@ -48,6 +48,12 @@ class ElectrumClient extends Client {
       'blockchain.address.subscribe',
     ];
     list.forEach(event => this.subscribe.removeAllListeners(event));
+
+    var retryPeriod = 5000;
+    if (this.persistencePolicy != null && this.persistencePolicy.retryPeriod > 0) {
+      retryPeriod = this.persistencePolicy.retryPeriod;
+    }
+
     setTimeout(() => {
       if (this.persistencePolicy != null && this.persistencePolicy.maxRetry > 0) {
         this.reconnect();
@@ -57,7 +63,7 @@ class ElectrumClient extends Client {
       } else if (this.persistencePolicy == null) {
         this.reconnect();
       }
-    }, 1000);
+    }, retryPeriod);
   }
 
   // ElectrumX persistancy
