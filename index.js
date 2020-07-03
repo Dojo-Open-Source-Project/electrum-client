@@ -5,61 +5,102 @@ const Client = require('./lib/client');
 class ElectrumClient extends Client {
 	constructor(port, host, protocol, options, callbacks) {
 		super(port, host, protocol, options, callbacks);
+
+		this.onConnectCallback = (callbacks && callbacks.onConnect) ? callbacks.onConnect : null;
+		this.onCloseCallback = (callbacks && callbacks.onClose) ? callbacks.onClose : null;
+		this.onLogCallback = (callbacks && callbacks.onLog) ? callbacks.onLog : function(str) {
+			console.log(str);
+		};
+
 		this.timeLastCall = 0;
 	}
 
-	initElectrum(electrumConfig, persistencePolicy = { retryPeriod: 5000, maxRetry: 1000, callback: null }) {
+	initElectrum(electrumConfig, persistencePolicy = { retryPeriod: 10000, maxRetry: 1000, callback: null }) {
 		this.persistencePolicy = persistencePolicy;
 		this.electrumConfig = electrumConfig;
 		this.timeLastCall = 0;
 
-		return this.connect().then(() => this.server_version(this.electrumConfig.client, this.electrumConfig.version)).catch((err) => {
-			this.log("Error connecting to Electrum: " + JSON.stringify(err));
+		return new Promise((resolve, reject) => {
+			this.connect().then(() => {
+				this.server_version(this.electrumConfig.client, this.electrumConfig.version).then((versionInfo) => {
+					this.versionInfo = versionInfo;
+
+					if (this.onConnectCallback != null) {
+						this.onConnectCallback(this, this.versionInfo);
+					}
+
+					resolve(this);
+
+				}).catch((err) => {
+					reject(err);
+				});
+			}).catch((err) => {
+				reject(err);
+			});
 		});
 	}
 
 	// Override parent
 	request(method, params) {
 		this.timeLastCall = new Date().getTime();
+
 		const parentPromise = super.request(method, params);
+
 		return parentPromise.then(response => {
 			this.keepAlive();
+
 			return response;
 		});
 	}
 
 	requestBatch(method, params, secondParam) {
 		this.timeLastCall = new Date().getTime();
+
 		const parentPromise = super.requestBatch(method, params, secondParam);
+
 		return parentPromise.then(response => {
 			this.keepAlive();
+
 			return response;
 		});
 	}
 
 	onClose() {
 		super.onClose();
+
 		const list = [
 			'server.peers.subscribe',
 			'blockchain.numblocks.subscribe',
 			'blockchain.headers.subscribe',
 			'blockchain.address.subscribe',
 		];
+
 		list.forEach(event => this.subscribe.removeAllListeners(event));
 
-		var retryPeriod = 5000;
+		var retryPeriod = 10000;
 		if (this.persistencePolicy != null && this.persistencePolicy.retryPeriod > 0) {
 			retryPeriod = this.persistencePolicy.retryPeriod;
 		}
 
+		if (this.onCloseCallback != null) {
+			this.onCloseCallback(this);
+		}
+
 		setTimeout(() => {
 			if (this.persistencePolicy != null && this.persistencePolicy.maxRetry > 0) {
-				this.reconnect();
+				this.reconnect().catch((err) => {
+					this.onError(err);
+				});
+
 				this.persistencePolicy.maxRetry -= 1;
+
 			} else if (this.persistencePolicy != null && this.persistencePolicy.callback != null) {
 				this.persistencePolicy.callback();
+
 			} else if (this.persistencePolicy == null) {
-				this.reconnect();
+				this.reconnect().catch((err) => {
+					this.onError(err);
+				});
 			}
 		}, retryPeriod);
 	}
@@ -80,14 +121,16 @@ class ElectrumClient extends Client {
 
 	close() {
 		super.close();
+
 		if (this.timeout != null) {
 			clearTimeout(this.timeout);
 		}
+
 		this.reconnect = this.reconnect = this.onClose = this.keepAlive = () => {}; // dirty hack to make it stop reconnecting
 	}
 
 	reconnect() {
-		this.log("Electrum reconnecting...");
+		this.log("Electrum attempting reconnect...");
 		
 		this.initSocket();
 
@@ -97,6 +140,10 @@ class ElectrumClient extends Client {
 		} else {
 			return this.initElectrum(this.electrumConfig);
 		}
+	}
+
+	log(str) {
+		this.onLogCallback(str);
 	}
 
 	// ElectrumX API
