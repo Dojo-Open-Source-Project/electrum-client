@@ -12,8 +12,9 @@ class ElectrumClient extends Client {
 		this.persistencePolicy = persistencePolicy;
 		this.electrumConfig = electrumConfig;
 		this.timeLastCall = 0;
+
 		return this.connect().then(() => this.server_version(this.electrumConfig.client, this.electrumConfig.version)).catch((err) => {
-			this.log("Error connecting to Electrum: " + err);
+			this.log("Error connecting to Electrum: " + JSON.stringify(err));
 		});
 	}
 
