@@ -15,7 +15,7 @@ class ElectrumClient extends Client {
 		this.timeLastCall = 0;
 	}
 
-	initElectrum(electrumConfig, persistencePolicy = { retryPeriod: 10000, maxRetry: 1000, callback: null }) {
+	initElectrum(electrumConfig, persistencePolicy = { retryPeriod: 10000, maxRetry: 1000, pingPeriod: 120000, callback: null }) {
 		this.persistencePolicy = persistencePolicy;
 		this.electrumConfig = electrumConfig;
 		this.timeLastCall = 0;
@@ -110,13 +110,19 @@ class ElectrumClient extends Client {
 		if (this.timeout != null) {
 			clearTimeout(this.timeout);
 		}
+
+		var pingPeriod = 120000;
+		if (this.persistencePolicy != null && this.persistencePolicy.pingPeriod > 0) {
+			pingPeriod = this.persistencePolicy.pingPeriod;
+		}
+
 		this.timeout = setTimeout(() => {
-			if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + 5000) {
+			if (this.timeLastCall !== 0 && new Date().getTime() > this.timeLastCall + pingPeriod) {
 				this.server_ping().catch((reason) => {
 					this.log('Keep-Alive ping failed: ', reason);
 				});
 			}
-		}, 5000);
+		}, pingPeriod);
 	}
 
 	close() {
