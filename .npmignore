@@ -1,0 +1,10 @@
+src/
+test/
+.vscode/
+.idea/
+.gitignore
+.mocharc.json
+.editorconfig
+.eslintrc.json
+
+tsconfig*
