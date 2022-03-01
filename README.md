@@ -28,7 +28,7 @@ This library uses ESModules, Node.js v14 or higher is required.
 import {ElectrumClient} from "@samouraiwallet/electrum-client";
 
 const run = async () => {
-    tcpClient = new ElectrumClient(60001, 'btc.electroncash.dk', 'tcp');
+    const tcpClient = new ElectrumClient(60001, 'btc.electroncash.dk', 'tcp');
 
     await tcpClient.initElectrum({client: 'electrum-client-js', version: ['1.2', '1.4']}, {
         retryPeriod: 5000,
