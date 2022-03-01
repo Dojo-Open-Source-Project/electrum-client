@@ -22,7 +22,7 @@
 		"build:clean": "rm -rf dist",
 		"build:esm": "tsc -p tsconfig.build.json",
 		"build": "npm run build:clean && npm run build:esm",
-		"prepack": "npm run typescript && npm run test",
+		"prepack": "npm run lint && npm run typescript && npm run test",
 		"prepare": "npm run build"
 	},
 	"repository": {
