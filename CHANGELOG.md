@@ -1,4 +1,8 @@
 # Changelog
+
+## 1.2.3 (2022-03-02)
+- Removed faulty parameter from `blockchain.headers.subscribe` call
+
 ## 1.2.2 (2022-03-02)
 - Fixed ES module definition
 
