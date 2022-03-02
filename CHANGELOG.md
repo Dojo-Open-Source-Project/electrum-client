@@ -1,5 +1,5 @@
 # Changelog
-## 1.2.1 (2022-03-01)
+## 1.2.2 (2022-03-02)
 - Fixed ES module definition
 
 ## 1.2.0 (2022-03-01)
