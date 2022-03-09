@@ -18,7 +18,7 @@ export type PersistencePolicy = {
 
 export type ElectrumConfig = {
     client: string;
-    version: string[];
+    version: string | [string, string];
 }
 
 export type ElectrumRequestParams = Array<number | string | boolean | Array<any>>;
