@@ -50,7 +50,7 @@ export class ElectrumClient extends Client {
 
         await this.connect()
 
-        this.versionInfo = (await this.server_version(this.electrumConfig?.client ?? '', this.electrumConfig?.version ?? ['', ''])) as [string, string]
+        this.versionInfo = (await this.server_version(electrumConfig.client, electrumConfig.version)) as [string, string]
 
         if (this.onConnectCallback != null) {
             this.onConnectCallback(this, this.versionInfo)
@@ -160,7 +160,7 @@ export class ElectrumClient extends Client {
     }
 
     // ElectrumX API
-    server_version(client_name: string, protocol_version: string[]) {
+    server_version(client_name: string, protocol_version: string | [string, string]) {
         return this.request('server.version', [client_name, protocol_version])
     }
 
