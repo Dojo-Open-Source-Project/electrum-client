@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.4 (2022-03-11)
+- Fixed type of protocol version in config
+
 ## 1.2.3 (2022-03-02)
 - Removed faulty parameter from `blockchain.headers.subscribe` call
 
