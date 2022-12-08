@@ -1,10 +1,13 @@
 src/
 test/
+coverage/
 .vscode/
 .idea/
 .gitignore
-.mocharc.json
 .editorconfig
 .eslintrc.json
+vitest.config.ts
+
+*.map
 
 tsconfig*

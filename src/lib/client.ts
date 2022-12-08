@@ -1,5 +1,5 @@
-import net from 'net'
-import {EventEmitter} from 'events'
+import net from 'node:net'
+import {EventEmitter} from 'node:events'
 
 import {TlsSocketWrapper} from './tls-socket-wrapper.js'
 import * as util from './util.js'

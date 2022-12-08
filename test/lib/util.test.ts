@@ -1,4 +1,4 @@
-import assert from 'assert'
+import {describe, it, assert} from 'vitest'
 import * as util from '../../src/lib/util.js'
 
 describe('util package', () => {
