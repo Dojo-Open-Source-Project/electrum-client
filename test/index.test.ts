@@ -116,4 +116,19 @@ describe('ElectrumClient TLS', () => {
             }
         ]))
     })
+
+    it('should make a request after reconnection', async () => {
+        await tlsClient.initElectrum({client: 'electrum-client-js', version: ['1.2', '1.4']}, {retryPeriod: 2000})
+        // @ts-ignore Hijack Typescript to call method on private field in order to simulate connection close
+        tlsClient.conn?.end()
+        const promise = await new Promise((resolve) => {
+            setTimeout(async () => {
+                const res = await tlsClient.server_banner()
+
+                resolve(res)
+            }, 10000)
+        })
+
+        assert.ok(promise)
+    })
 })
