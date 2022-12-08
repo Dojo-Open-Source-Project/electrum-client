@@ -8,4 +8,6 @@ coverage/
 .eslintrc.json
 vitest.config.ts
 
+*.map
+
 tsconfig*
