@@ -15,7 +15,7 @@ export class ElectrumClient extends Client {
     private timeLastCall: number
     private persistencePolicy: Required<PersistencePolicy>
     private electrumConfig: ElectrumConfig | null
-    private timeout: NodeJS.Timeout | null
+    private pingInterval: NodeJS.Timer | null
     versionInfo: [string, string]
 
     constructor(port: number, host: string, protocol: Protocol, callbacks?: Callbacks) {
@@ -36,7 +36,7 @@ export class ElectrumClient extends Client {
             callback: null,
         }
         this.electrumConfig = null
-        this.timeout = null
+        this.pingInterval = null
         this.versionInfo = ['', '']
     }
 
@@ -117,8 +117,8 @@ export class ElectrumClient extends Client {
 
     // ElectrumX persistancy
     private keepAlive(): void {
-        if (this.timeout != null) {
-            clearTimeout(this.timeout)
+        if (this.pingInterval != null) {
+            clearInterval(this.pingInterval)
         }
 
         let pingPeriod = 120000
@@ -126,7 +126,7 @@ export class ElectrumClient extends Client {
             pingPeriod = this.persistencePolicy.pingPeriod
         }
 
-        this.timeout = setTimeout(() => {
+        this.pingInterval = setInterval(() => {
             if (this.timeLastCall !== 0 && Date.now() > this.timeLastCall + pingPeriod) {
                 this.server_ping().catch((error) => {
                     this.log(`Keep-Alive ping failed: ${error}`)
@@ -138,8 +138,8 @@ export class ElectrumClient extends Client {
     close(): void {
         super.close()
 
-        if (this.timeout != null) {
-            clearTimeout(this.timeout)
+        if (this.pingInterval != null) {
+            clearInterval(this.pingInterval)
         }
 
         // eslint-disable-next-line no-multi-assign
