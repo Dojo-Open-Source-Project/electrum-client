@@ -102,6 +102,7 @@
     "unicorn/numeric-separators-style": "off",
     "unicorn/require-post-message-target-origin": "off",
     "unicorn/no-array-reduce": "off",
-    "unicorn/switch-case-braces": "off"
+    "unicorn/switch-case-braces": "off",
+    "unicorn/prefer-event-target": "off"
   }
 }
