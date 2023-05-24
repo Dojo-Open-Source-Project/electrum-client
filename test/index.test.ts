@@ -6,26 +6,9 @@ import {ElectrumClient} from '../src'
 let tcpClient: ElectrumClient
 let tlsClient: ElectrumClient
 
-/*
-const callbacks = {
-    onConnect: (_: any, versionInfo: any) => {
-        console.log('client connect', versionInfo)
-    },
-    onLog: (msg: any) => {
-        console.log('client log', msg)
-    },
-    onError: (err: any) => {
-        console.error('client error', err)
-    },
-    onClose: () => {
-        console.log('client: Connection closed')
-    }
-}
- */
-
 beforeEach(() => {
-    tcpClient = new ElectrumClient(50001, 'fulc.bot.nu', 'tcp')
-    tlsClient = new ElectrumClient(57002, 'blackie.c3-soft.com', 'tls')
+    tcpClient = new ElectrumClient(60001, 'btc.electroncash.dk', 'tcp')
+    tlsClient = new ElectrumClient(60002, 'btc.electroncash.dk', 'tls')
 })
 
 afterEach(() => {

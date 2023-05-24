@@ -67,10 +67,8 @@ export class TlsSocketWrapper extends net.Socket {
     }
 
     setTimeout(timeout: number, callback?: () => void): this {
-        if (this._socket) this._socket.setTimeout(timeout)
+        if (this._socket) this._socket.setTimeout(timeout, callback)
         this._timeout = timeout
-
-        if (callback) callback()
 
         return this
     }
