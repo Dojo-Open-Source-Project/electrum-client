@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0 (2023-05-24)
+- Updated keepAlive to use interval instead of timeout
+- Fixed setTimeout on TlsSocketWrapper
+- Updated dependencies
+
 ## 1.3.0 (2022-12-08)
 - Updated TLS wrapper
 - Updated dependencies
