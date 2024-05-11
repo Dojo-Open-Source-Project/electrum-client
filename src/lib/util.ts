@@ -53,8 +53,8 @@ type MessageParserCallback = (body: string | undefined, n: number) => void;
 
 export class MessageParser {
     private buffer: string
-    private callback: MessageParserCallback
-    private recursiveParser = createRecursiveParser(20, '\n')
+    private readonly callback: MessageParserCallback
+    private readonly recursiveParser: ReturnType<typeof createRecursiveParser>
 
     constructor(callback: MessageParserCallback) {
         this.buffer = ''
