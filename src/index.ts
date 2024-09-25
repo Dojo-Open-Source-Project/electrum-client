@@ -9,9 +9,9 @@ import {
 } from './types'
 
 export class ElectrumClient extends Client {
-    private onConnectCallback: ((client: ElectrumClient, versionInfo: [string, string]) => void) | null
-    private onCloseCallback: ((client: ElectrumClient) => void) | null
-    private onLogCallback: (str: string) => void
+    private readonly onConnectCallback: ((client: ElectrumClient, versionInfo: [string, string]) => void) | null
+    private readonly onCloseCallback: ((client: ElectrumClient) => void) | null
+    private readonly onLogCallback: (str: string) => void
     private timeLastCall: number
     private persistencePolicy: Required<PersistencePolicy>
     private electrumConfig: ElectrumConfig | null
