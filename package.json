@@ -2,7 +2,7 @@
 	"name": "@samouraiwallet/electrum-client",
 	"version": "1.4.0",
 	"engines": {
-		"node": ">=14.0.0"
+		"node": ">=18.6.0"
 	},
 	"description": "Electrum protocol client for Node.js",
 	"keywords": [
@@ -11,7 +11,12 @@
 		"electrumx"
 	],
 	"type": "module",
-	"exports": "./dist/index.js",
+	"exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"test": "vitest run",
@@ -21,8 +26,7 @@
 		"build:clean": "rm -rf dist",
 		"build:esm": "tsc -p tsconfig.build.json",
 		"build": "npm run build:clean && npm run build:esm",
-		"prepack": "npm run lint && npm run typescript && npm run test",
-		"prepare": "npm run build"
+		"prepack": "npm run lint && npm run typescript && npm run test && npm run build"
 	},
 	"repository": {
 		"type": "git",
