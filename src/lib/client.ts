@@ -5,7 +5,7 @@ import {EventEmitter} from 'node:events'
 import * as util from './util.js'
 import type {Protocol, Callbacks, ElectrumRequestBatchParams, ElectrumRequestParams} from '../types'
 
-const TIMEOUT = 5000
+const TIMEOUT = 60000
 
 export abstract class Client {
     private id: number
