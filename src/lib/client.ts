@@ -1,14 +1,14 @@
+import { EventEmitter } from "node:events";
 import net from "node:net";
 import tls from "node:tls";
-import { EventEmitter } from "node:events";
 
-import * as util from "./util.js";
 import type {
-	Protocol,
 	Callbacks,
 	ElectrumRequestBatchParams,
 	ElectrumRequestParams,
+	Protocol,
 } from "../types";
+import * as util from "./util.js";
 
 const TIMEOUT = 60000;
 
@@ -86,13 +86,13 @@ export abstract class Client {
 			if (this.conn && this.conn.readyState === "open") {
 				resolve();
 			}
-			this.protocol === "tcp"
-				? this.conn?.once("connect", () => {
-						resolve();
-					})
-				: this.conn?.once("secureConnect", () => {
-						resolve();
-					});
+
+			this.conn?.once(
+				this.protocol === "tcp" ? "connect" : "secureConnect",
+				() => {
+					resolve();
+				},
+			);
 		});
 	}
 
