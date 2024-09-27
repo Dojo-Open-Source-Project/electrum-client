@@ -1,6 +1,7 @@
 import { Client } from "./lib/client.js";
 import type {
 	Callbacks,
+	CreateClientParams,
 	ElectrumConfig,
 	ElectrumRequestBatchParams,
 	ElectrumRequestParams,
@@ -49,6 +50,35 @@ export class ElectrumClient extends Client {
 		this.versionInfo = ["", ""];
 	}
 
+	/**
+	 * Creates an instance of ElectrumClient and initializes it with the provided configuration.
+	 *
+	 * @param {CreateClientParams} params - The parameters required to create and initialize the client.
+	 * @param {number} params.port - The port number to connect to.
+	 * @param {string} params.host - The host address to connect to.
+	 * @param {Protocol} params.protocol - The protocol to use for the connection.
+	 * @param {Callbacks} [params.callbacks] - Optional callbacks for connection events.
+	 * @param {ElectrumConfig} params.electrumConfig - The Electrum configuration to use.
+	 * @param {PersistencePolicy} [params.persistencePolicy] - Optional persistence policy for the client.
+	 *
+	 * @returns {Promise<ElectrumClient>} A promise that resolves to an initialized ElectrumClient instance.
+	 */
+	static async createClient(
+		params: CreateClientParams,
+	): Promise<ElectrumClient> {
+		const client = new ElectrumClient(
+			params.port,
+			params.host,
+			params.protocol,
+			params.callbacks,
+		);
+
+		return await client.initElectrum(
+			params.electrumConfig,
+			params.persistencePolicy,
+		);
+	}
+
 	async initElectrum(
 		electrumConfig: ElectrumConfig,
 		persistencePolicy?: PersistencePolicy,
@@ -74,7 +104,6 @@ export class ElectrumClient extends Client {
 		return this;
 	}
 
-	// Override parent
 	protected async request<T>(method: string, params: ElectrumRequestParams<T>) {
 		this.timeLastCall = Date.now();
 
@@ -133,7 +162,6 @@ export class ElectrumClient extends Client {
 		}, retryPeriod);
 	}
 
-	// ElectrumX persistancy
 	private keepAlive(): void {
 		if (this.pingInterval != null) {
 			clearInterval(this.pingInterval);

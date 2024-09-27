@@ -21,6 +21,15 @@ export type ElectrumConfig = {
 	version: string | [string, string];
 };
 
+export type CreateClientParams = {
+	host: string;
+	port: number;
+	protocol: Protocol;
+	electrumConfig: ElectrumConfig;
+	callbacks?: Callbacks;
+	persistencePolicy?: PersistencePolicy;
+};
+
 export type ElectrumRequestParams<T> = Array<
 	number | string | boolean | Array<T>
 >;

@@ -1,13 +1,25 @@
-import { beforeEach, afterEach, describe, it, assert, expect } from "vitest";
+import { assert, afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { ElectrumClient } from "../src";
 
 let tcpClient: ElectrumClient;
 let tlsClient: ElectrumClient;
 
-beforeEach(() => {
-	tcpClient = new ElectrumClient(60001, "btc.electroncash.dk", "tcp");
-	tlsClient = new ElectrumClient(60002, "btc.electroncash.dk", "tls");
+beforeEach(async () => {
+	tcpClient = await ElectrumClient.createClient({
+		port: 60001,
+		host: "btc.electroncash.dk",
+		protocol: "tcp",
+		electrumConfig: { client: "electrum-client-js", version: ["1.2", "1.4"] },
+		persistencePolicy: { retryPeriod: 2000 },
+	});
+	tlsClient = await ElectrumClient.createClient({
+		port: 60002,
+		host: "btc.electroncash.dk",
+		protocol: "tls",
+		electrumConfig: { client: "electrum-client-js", version: ["1.2", "1.4"] },
+		persistencePolicy: { retryPeriod: 2000 },
+	});
 });
 
 afterEach(() => {
@@ -17,19 +29,10 @@ afterEach(() => {
 
 describe("ElectrumClient TCP", () => {
 	it("successfully connects to Electrum server", async () => {
-		const clt = await tcpClient.initElectrum(
-			{ client: "electrum-client-js", version: ["1.2", "1.4"] },
-			{ retryPeriod: 2000 },
-		);
-
-		assert.ok(clt.versionInfo);
+		assert.ok(tcpClient.versionInfo);
 	});
 
 	it("successfully makes a standard request", async () => {
-		await tcpClient.initElectrum(
-			{ client: "electrum-client-js", version: ["1.2", "1.4"] },
-			{ retryPeriod: 2000 },
-		);
 		const response = await tcpClient.blockchainTransaction_get(
 			"b270b8a113c048ed0024e470e3c7794565c2b3e18c600d20410ec8f454b7d25a",
 		);
@@ -41,10 +44,6 @@ describe("ElectrumClient TCP", () => {
 	});
 
 	it("successfully makes a batch request", async () => {
-		await tcpClient.initElectrum(
-			{ client: "electrum-client-js", version: ["1.2", "1.4"] },
-			{ retryPeriod: 2000 },
-		);
 		const response = await tcpClient.blockchainTransaction_getBatch([
 			"b270b8a113c048ed0024e470e3c7794565c2b3e18c600d20410ec8f454b7d25a",
 			"f08474320cb16c34bb6ccbd8ca77b41168589155e8cf0af787d8d8b2a975af0b",
@@ -73,10 +72,6 @@ describe("ElectrumClient TCP", () => {
 	});
 
 	it("should make a request after reconnection", async () => {
-		await tcpClient.initElectrum(
-			{ client: "electrum-client-js", version: ["1.2", "1.4"] },
-			{ retryPeriod: 2000 },
-		);
 		// @ts-ignore Hijack Typescript to call method on private field in order to simulate connection close
 		tcpClient.conn?.end();
 		const promise = await new Promise((resolve) => {
@@ -93,19 +88,10 @@ describe("ElectrumClient TCP", () => {
 
 describe("ElectrumClient TLS", () => {
 	it("successfully connects to Electrum server", async () => {
-		const clt = await tlsClient.initElectrum({
-			client: "electrum-client-js",
-			version: ["1.2", "1.4"],
-		});
-
-		assert.ok(clt.versionInfo);
+		assert.ok(tlsClient.versionInfo);
 	});
 
 	it("successfully makes a standard request", async () => {
-		await tlsClient.initElectrum({
-			client: "electrum-client-js",
-			version: ["1.2", "1.4"],
-		});
 		const response = await tlsClient.blockchainTransaction_get(
 			"b270b8a113c048ed0024e470e3c7794565c2b3e18c600d20410ec8f454b7d25a",
 		);
@@ -117,10 +103,6 @@ describe("ElectrumClient TLS", () => {
 	});
 
 	it("successfully makes a batch request", async () => {
-		await tlsClient.initElectrum({
-			client: "electrum-client-js",
-			version: ["1.2", "1.4"],
-		});
 		const response = await tlsClient.blockchainTransaction_getBatch([
 			"b270b8a113c048ed0024e470e3c7794565c2b3e18c600d20410ec8f454b7d25a",
 			"f08474320cb16c34bb6ccbd8ca77b41168589155e8cf0af787d8d8b2a975af0b",
@@ -149,10 +131,6 @@ describe("ElectrumClient TLS", () => {
 	});
 
 	it("should make a request after reconnection", async () => {
-		await tlsClient.initElectrum(
-			{ client: "electrum-client-js", version: ["1.2", "1.4"] },
-			{ retryPeriod: 2000 },
-		);
 		// @ts-ignore Hijack Typescript to call method on private field in order to simulate connection close
 		tlsClient.conn?.end();
 		const promise = await new Promise((resolve) => {
