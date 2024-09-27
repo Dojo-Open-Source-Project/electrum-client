@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.0 (2024-09-27)
+- Removed unnecessary boilerplate (TlsSocketWrapper)
+- Added static `createClient` method for more convenience
+- Updated dependencies
+
+- (DEV) - Updated to Node.js v18
+- (DEV) - Swtiched to PNPM
+- (DEV) - Switched from eslint to biome
+
 ## 1.4.0 (2023-05-24)
 - Updated keepAlive to use interval instead of timeout
 - Fixed setTimeout on TlsSocketWrapper
