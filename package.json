@@ -1,48 +1,46 @@
 {
 	"name": "@samouraiwallet/electrum-client",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"engines": {
-		"node": ">=14.0.0"
+		"node": ">=18.6.0"
 	},
 	"description": "Electrum protocol client for Node.js",
-	"keywords": [
-		"bitcoin",
-		"electrum",
-		"electrumx"
-	],
+	"keywords": ["bitcoin", "electrum", "electrumx"],
 	"type": "module",
-	"exports": "./dist/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"test": "vitest run",
 		"test:watch": "vitest watch",
-		"lint": "eslint --ext .ts src/",
+		"lint": "biome lint src/ test/",
+		"lint:fix": "biome lint --write src/ test/",
+		"pretty": "biome format --write src/ test/",
 		"typescript": "tsc --noEmit",
 		"build:clean": "rm -rf dist",
 		"build:esm": "tsc -p tsconfig.build.json",
 		"build": "npm run build:clean && npm run build:esm",
-		"prepack": "npm run lint && npm run typescript && npm run test",
-		"prepare": "npm run build"
+		"prepack": "npm run lint && npm run typescript && npm run test && npm run build"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git://code.samourai.io/dojo/electrum-client.git"
+		"url": "https://github.com/Dojo-Open-Source-Project/electrum-client.git"
 	},
 	"bugs": {
-		"url": "https://code.samourai.io/dojo/electrum-client/-/issues"
+		"url": "https://github.com/Dojo-Open-Source-Project/electrum-client/issues"
 	},
 	"author": "Katana Cryptographic Ltd.",
 	"license": "LGPL-3.0",
-	"homepage": "https://code.samourai.io/dojo/electrum-client",
+	"homepage": "https://github.com/Dojo-Open-Source-Project/electrum-client",
 	"devDependencies": {
-		"@types/node": "^16.18.32",
-		"@typescript-eslint/eslint-plugin": "^5.59.7",
-		"@typescript-eslint/parser": "^5.59.7",
-		"@vitest/coverage-c8": "^0.31.1",
-		"eslint": "^8.41.0",
-		"eslint-plugin-import": "^2.27.5",
-		"eslint-plugin-unicorn": "^47.0.0",
+		"@biomejs/biome": "1.9.2",
+		"@types/node": "^18.19.53",
+		"@vitest/coverage-v8": "^2.1.1",
 		"typescript": "^5.0.4",
-		"vitest": "^0.31.1"
+		"vitest": "^2.1.1"
 	}
 }
