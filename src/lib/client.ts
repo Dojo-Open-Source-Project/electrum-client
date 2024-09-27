@@ -84,7 +84,7 @@ export abstract class Client {
 	protected connect(): Promise<void> {
 		return new Promise<void>((resolve) => {
 			if (this.conn && this.conn.readyState === "open") {
-				resolve();
+				return resolve();
 			}
 
 			this.conn?.once(
