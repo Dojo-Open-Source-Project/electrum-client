@@ -13,6 +13,7 @@ This library uses ESModules, Node.js v18 or higher is required.
 
 # Features
 
+* No dependencies
 * Persistence (ping strategy and reconnection)
 * Batch requests
 * Promise API
