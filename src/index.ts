@@ -21,6 +21,14 @@ export class ElectrumClient extends Client {
 	private pingInterval: NodeJS.Timeout | null;
 	versionInfo: [string, string];
 
+	/**
+	 * Constructs an instance of ElectrumClient.
+	 *
+	 * @param {number} port - The port number to connect to.
+	 * @param {string} host - The host address to connect to.
+	 * @param {Protocol} protocol - The protocol to use for the connection.
+	 * @param {Callbacks} [callbacks] - Optional callbacks for connection events.
+	 */
 	constructor(
 		port: number,
 		host: string,
@@ -79,6 +87,13 @@ export class ElectrumClient extends Client {
 		);
 	}
 
+	/**
+	 * Initializes the Electrum client with the provided configuration and persistence policy.
+	 *
+	 * @param {ElectrumConfig} electrumConfig - The Electrum configuration to use.
+	 * @param {PersistencePolicy} [persistencePolicy] - Optional persistence policy for the client.
+	 * @returns {Promise<ElectrumClient>} A promise that resolves to the initialized ElectrumClient instance.
+	 */
 	async initElectrum(
 		electrumConfig: ElectrumConfig,
 		persistencePolicy?: PersistencePolicy,
@@ -184,6 +199,11 @@ export class ElectrumClient extends Client {
 		}, pingPeriod);
 	}
 
+	/**
+	 * Closes the Electrum client connection and stops the keep-alive ping interval.
+	 *
+	 * @returns {void}
+	 */
 	close(): void {
 		super.close();
 
