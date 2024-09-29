@@ -57,7 +57,7 @@ export abstract class Client {
 		this.conn =
 			this.protocol === "tls" || this.protocol === "ssl"
 				? // @ts-expect-error
-					new tls.TLSSocket()
+					new tls.TLSSocket(null, { rejectUnauthorized: false })
 				: new net.Socket();
 		this.conn.setTimeout(TIMEOUT);
 		this.conn.setEncoding("utf8");

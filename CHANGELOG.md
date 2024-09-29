@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.2 (2024-09-29)
+- Added `{rejectUnauthorized: false}` to TLSSocket
+
 ## 1.5.1 (2024-09-29)
 - Fixed socket connecting preemptively
 
