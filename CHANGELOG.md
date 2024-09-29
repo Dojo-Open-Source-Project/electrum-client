@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.1 (2024-09-29)
+- Fixed socket connecting preemptively
+
 ## 1.5.0 (2024-09-27)
 - Removed unnecessary boilerplate (TlsSocketWrapper)
 - Added static `createClient` method for more convenience

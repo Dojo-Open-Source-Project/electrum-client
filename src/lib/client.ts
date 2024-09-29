@@ -20,6 +20,7 @@ export abstract class Client {
 	>;
 	protected subscribe: EventEmitter;
 	private mp: util.MessageParser;
+	private status: 0 | 1;
 	private readonly protocol: Protocol;
 	private conn: net.Socket | tls.TLSSocket | undefined;
 	private readonly host: string;
@@ -35,6 +36,7 @@ export abstract class Client {
 		this.id = 0;
 		this.host = host;
 		this.port = port;
+		this.status = 0;
 		this.protocol = protocol;
 		this.callback_message_queue = new Map();
 		this.subscribe = new EventEmitter();
@@ -54,21 +56,17 @@ export abstract class Client {
 	protected initSocket(): void {
 		this.conn =
 			this.protocol === "tls" || this.protocol === "ssl"
-				? tls.connect(
-						{ host: this.host, port: this.port, rejectUnauthorized: false },
-						() => {
-							this.conn?.setTimeout(0);
-							this.onConnect();
-						},
-					)
-				: net.connect({ host: this.host, port: this.port }, () => {
-						this.conn?.setTimeout(0);
-						this.onConnect();
-					});
+				? // @ts-expect-error
+					new tls.TLSSocket()
+				: new net.Socket();
 		this.conn.setTimeout(TIMEOUT);
 		this.conn.setEncoding("utf8");
 		this.conn.setKeepAlive(true, 0);
 		this.conn.setNoDelay(true);
+		this.conn.on("connect", () => {
+			this.conn?.setTimeout(0);
+			this.onConnect();
+		});
 		this.conn.on("close", () => {
 			this.onClose();
 		});
@@ -79,25 +77,43 @@ export abstract class Client {
 		this.conn.on("error", (e: Error) => {
 			this.onError(e);
 		});
+		this.status = 0;
 	}
 
 	protected connect(): Promise<void> {
-		return new Promise<void>((resolve) => {
-			if (this.conn && this.conn.readyState === "open") {
-				return resolve();
+		if (this.conn) {
+			if (this.status === 1) {
+				return Promise.resolve();
 			}
+			this.status = 1;
+			return this.connectSocket(this.conn, this.port, this.host);
+		}
 
-			this.conn?.once(
-				this.protocol === "tcp" ? "connect" : "secureConnect",
-				() => {
-					resolve();
-				},
-			);
+		return Promise.reject(
+			new Error("There is no socket to initialize connection on."),
+		);
+	}
+
+	private connectSocket(
+		conn: net.Socket | tls.TLSSocket,
+		port: number,
+		host: string,
+	): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			const errorHandler = (e: Error) => reject(e);
+
+			conn.on("error", errorHandler);
+
+			conn.connect(port, host, () => {
+				conn.removeListener("error", errorHandler);
+
+				resolve();
+			});
 		});
 	}
 
 	close(): void {
-		if (this.conn && this.conn.readyState === "closed") {
+		if (this.status === 0) {
 			return;
 		}
 		this.conn?.end();
@@ -105,7 +121,7 @@ export abstract class Client {
 	}
 
 	protected request<T>(method: string, params: ElectrumRequestParams<T>) {
-		if (this.conn && this.conn.readyState === "closed") {
+		if (this.status === 0) {
 			return Promise.reject(
 				new Error("Connection to server lost, please retry"),
 			);
@@ -126,7 +142,7 @@ export abstract class Client {
 		params: ElectrumRequestParams<T>,
 		secondParam: ElectrumRequestBatchParams,
 	) {
-		if (this.conn && this.conn.readyState === "closed") {
+		if (this.status === 0) {
 			return Promise.reject(
 				new Error("Connection to server lost, please retry"),
 			);

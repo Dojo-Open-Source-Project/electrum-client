@@ -71,9 +71,7 @@ export class ElectrumClient extends Client {
 	 *
 	 * @returns {Promise<ElectrumClient>} A promise that resolves to an initialized ElectrumClient instance.
 	 */
-	static async createClient(
-		params: CreateClientParams,
-	): Promise<ElectrumClient> {
+	static createClient(params: CreateClientParams): Promise<ElectrumClient> {
 		const client = new ElectrumClient(
 			params.port,
 			params.host,
@@ -81,10 +79,7 @@ export class ElectrumClient extends Client {
 			params.callbacks,
 		);
 
-		return await client.initElectrum(
-			params.electrumConfig,
-			params.persistencePolicy,
-		);
+		return client.initElectrum(params.electrumConfig, params.persistencePolicy);
 	}
 
 	/**
