@@ -1,3 +1,9 @@
+# Archived
+
+This project has been moved to [dojo-tools repository](https://github.com/Dojo-Open-Source-Project/dojo-tools/tree/master/packages/electrum-client).
+
+---
+
 # @samouraiwallet/electrum-client
 
 Efficient and no-dependency Electrum Protocol client for Node.js.
